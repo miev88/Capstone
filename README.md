@@ -1,4 +1,4 @@
-# V2V-Communication-At-Intersection
+# V2V-Intersection-Communication
 A smart intersection that regulates the traffic flow without traffic lights
 
 This is the capstone project for the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213).
@@ -31,9 +31,9 @@ This project extends the Concurrent-Traffic-Simulator built in the fourth projec
 - **TrafficObject.h** : I modified the enumeration ```ObjectType```. I replaced ```objectVehicle``` with ```objectCar``` and```objectBike```. Moreover, I modified the signature of the constructor that now takes an argument of type ```size_t``` which is saved in the protected variable ```_name```, which can be retrieved from outside with the new getter method ```getName```. 
 - **TrafficObject.cpp** : The protected variable ```_name``` is initialized with an initializer list in the modified constructor.
 - **Vehicle.h** : I modified the constructor signature (s. TrafficObject), made the method ```drive``` virtual, and added the methods ```GetCurrStreet```and ```GetCurrDestination```. Moreover, I made protected the members that were private.
-- **Car.cpp** : ```_type``` and ```_speed``` are assigned the respective values. It implements ```drive```. I improved this function so that now a car drives on its own lane. 
-- **Bike.cpp** : see **Car.cpp**, with the main difference that a bike drives on the very right side of the its own lane.
+- **Car.cpp** : ```_type``` and ```_speed``` are assigned the respective values. I improved the implementation of the function ```drive``` so that now a car drives in its own lane (in the implementation in project four, each vehicle drove in the middle of the road).
+- **Bike.cpp** : see Car.cpp. The main difference is that a bike drives on the very right side of its own lane.
 - **Intersection.h** : I added the public method ```permitEntryToVehicleFromTheRight```.
-- **Intersection.cpp** : I modified the method ```processVehicleQueue```. It calls ```permitEntryToFirstInQueue``` if there is only one vehicle in the queue or if the intersection is not the central one. Otherwise, it calls ```permitEntryToVehicleFromTheRight```. Moreover, I implemented ```permitEntryToVehicleFromTheRight```: A vehicle coming from a street with a lower number (note: streets are numerated clockwise, with the street at the bottom being number zero) takes precedence because it comes from the right. The exception is if the second vehicle in the queue is coming from street named 0. In this case the other vehicle takes precedence. If one car and one bike come from the same street, the bike takes precedence. **These rules apply only to the first two vehicles in the queue at each call of this method.**
+- **Intersection.cpp** : I modified the method ```processVehicleQueue```. It calls ```permitEntryToFirstInQueue``` if there is only one vehicle in the queue or if the intersection is not the central one. Otherwise, it calls ```permitEntryToVehicleFromTheRight```: A vehicle coming from a street with a lower number - streets are numerated clockwise, with the street at the bottom being number zero - takes precedence (i.e., Priority to the right). The exception is if the second vehicle in the queue is coming from street zero. In this case the other vehicle takes precedence. Moreover, if one car and one bike come from the same street, the bike takes precedence. **These rules apply only to the first two vehicles in the queue at each call of this method.**
 
 I also removed **TrafficLight.h** and **TrafficLight.cpp**, and ```TrafficLight``` objects from this program.
