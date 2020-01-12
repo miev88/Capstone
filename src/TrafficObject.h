@@ -8,9 +8,10 @@
 enum ObjectType
 {
     noObject,
-    objectVehicle,
+    objectCar,
+    objectBike,
     objectIntersection,
-    objectStreet,
+    objectStreet
 };
 
 class TrafficObject

@@ -10,7 +10,7 @@ class Intersection;
 class Vehicle : public TrafficObject, public std::enable_shared_from_this<Vehicle>
 {
 public:
-    // constructor / desctructor
+    // constructor
     Vehicle(size_t name);
 
     // getters / setters
@@ -25,9 +25,9 @@ public:
     // miscellaneous
     std::shared_ptr<Vehicle> get_shared_this() { return shared_from_this(); }
 
-private:
+protected:
     // typical behaviour methods
-    void drive();
+    virtual void drive() {};
 
     std::shared_ptr<Street> _currStreet;            // street on which the vehicle is currently on
     std::shared_ptr<Intersection> _currDestination; // destination to which the vehicle is currently driving

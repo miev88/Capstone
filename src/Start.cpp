@@ -2,13 +2,17 @@
 #include <thread>
 #include <vector>
 
-#include "Vehicle.h"
+#include "Car.h"
+#include "Bike.h"
 #include "Street.h"
 #include "Intersection.h"
 #include "Graphics.h"
 
 
-void createTrafficObjects_Cross(std::vector<std::shared_ptr<Street>> &streets, std::vector<std::shared_ptr<Intersection>> &intersections, std::vector<std::shared_ptr<Vehicle>> &vehicles, std::string &filename, int nVehicles)
+void createTrafficObjects_Cross(std::vector<std::shared_ptr<Street>> &streets, 
+                                std::vector<std::shared_ptr<Intersection>> &intersections, 
+                                std::vector<std::shared_ptr<Vehicle>> &vehicles, 
+				std::string &filename, int nCars, int nBikes)
 {
     // assign filename of corresponding city map
     filename = "../data/cross.jpg";
@@ -35,18 +39,29 @@ void createTrafficObjects_Cross(std::vector<std::shared_ptr<Street>> &streets, s
         streets.at(ns)->setOutIntersection(intersections.at(4));
     }
 
-    // add vehicles to streets
-    for (size_t nv = 0; nv < nVehicles; nv++)
+    // add cars to streets
+    for (size_t nv = 0; nv < nCars; nv++)
     {
-        vehicles.push_back(std::make_shared<Vehicle>(nv));
+        vehicles.push_back(std::make_shared<Car>(nv));
+    }
+    // add bikes to streets
+    for (size_t nv = 0; nv < nBikes; nv++)
+    {
+        vehicles.push_back(std::make_shared<Bike>(nv));
     }
     // add origin and destination to each vehicle
-    vehicles.at(0)->setCurrentStreet(streets.at(1));
+    // car(s)
+    vehicles.at(0)->setCurrentStreet(streets.at(0));
     vehicles.at(0)->setCurrentDestination(intersections.at(4));
-    vehicles.at(1)->setCurrentStreet(streets.at(2));
+    vehicles.at(1)->setCurrentStreet(streets.at(1));
     vehicles.at(1)->setCurrentDestination(intersections.at(4));
     vehicles.at(2)->setCurrentStreet(streets.at(3));
     vehicles.at(2)->setCurrentDestination(intersections.at(4));
+    // bike(s)
+    vehicles.at(3)->setCurrentStreet(streets.at(0));
+    vehicles.at(3)->setCurrentDestination(intersections.at(4));
+    vehicles.at(4)->setCurrentStreet(streets.at(1));
+    vehicles.at(4)->setCurrentDestination(intersections.at(4));
 }
 
 
@@ -60,10 +75,11 @@ int main()
     std::vector<std::shared_ptr<Intersection>> intersections;
     std::vector<std::shared_ptr<Vehicle>> vehicles;
     std::string backgroundImg;
-    int nVehicles = 3;
-    createTrafficObjects_Cross(streets, intersections, vehicles, backgroundImg, nVehicles);
+    int nCars = 3;
+    int nBikes = 2;
+    createTrafficObjects_Cross(streets, intersections, vehicles, backgroundImg, nCars, nBikes);
 
-    /* PART 2 : simulate traffic objects */
+    /* PART 2 : Simulate traffic objects */
 
     // simulate intersection
     std::for_each(intersections.begin(), intersections.end(), [](std::shared_ptr<Intersection> &i) {

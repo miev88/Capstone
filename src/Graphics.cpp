@@ -48,14 +48,23 @@ void Graphics::drawTrafficObjects()
             // cast object type from TrafficObject to Intersection
             std::shared_ptr<Intersection> intersection = std::dynamic_pointer_cast<Intersection>(it);
         }
-        else if (it->getType() == ObjectType::objectVehicle)
+        else if (it->getType() == ObjectType::objectCar)
         {
             cv::RNG rng(it->getID());		// random number generator with seed=vehicle_ID
             int b = rng.uniform(0, 255);
             int g = rng.uniform(0, 255);
             int r = sqrt(255*255 - g*g - r*r);  // ensure that length of color vector is always 255
-            cv::Scalar vehicleColor = cv::Scalar(b,g,r);
-            cv::circle(_images.at(1), cv::Point2d(posx, posy), 50, vehicleColor, -1);
+            cv::Scalar carColor = cv::Scalar(b,g,r);
+            cv::circle(_images.at(1), cv::Point2d(posx, posy), 30, carColor, -1);
+        }
+        else if (it->getType() == ObjectType::objectBike)
+        {
+            cv::RNG rng(it->getID());		// random number generator with seed=vehicle_ID
+            int b = rng.uniform(0, 255);
+            int g = rng.uniform(0, 255);
+            int r = sqrt(255*255 - g*g - r*r);  // ensure that length of color vector is always 255
+            cv::Scalar bikeColor = cv::Scalar(b,g,r);
+            cv::rectangle(_images.at(1), cv::Point2d(posx, posy), cv::Point2d(posx+40, posy+40), bikeColor, -1);
         }
     }
 

@@ -41,30 +41,41 @@ void WaitingVehicles::permitEntryToFirstInQueue()
 void WaitingVehicles::permitEntryToVehicleFromTheRight()
 {
     std::lock_guard<std::mutex> lock(_mutex);
-    // decide which vehicle of the first two in the queue takes precedence
+    // decide which vehicle of the two first in the queue takes precedence
     auto firstPromise = _promises.begin();
     auto firstVehicle = _vehicles.begin();
-    auto secondPromise = _promises.begin() + 1;
-    auto secondVehicle = _vehicles.begin() + 1;
+    auto secondPromise = _promises.begin()+1;
+    auto secondVehicle = _vehicles.begin()+1;
+    
+    auto firstVehicleType = (*firstVehicle)->getType();
+    auto secondVehicleType = (*secondVehicle)->getType();
     auto firstVehicleStreetOriginName = (*firstVehicle)->getCurrStreet()->getName();
     auto secondVehicleStreetOriginName = (*secondVehicle)->getCurrStreet()->getName();
-    // vehicle coming from a street with a lower number (name) is on the right and thus takes precedence
-    if (secondVehicleStreetOriginName != 0)
+    
+    // vehicle coming from a street with a lower number takes precedence because it comes from the right, 
+    // unless the second vehicle is coming from street named 0, then other vehicle takes precedence.
+    // if two vehicles of different type come from the same street, then the bike takes precedence
+    if (firstVehicleStreetOriginName == secondVehicleStreetOriginName && firstVehicleType != secondVehicleType)
     {
-       if (firstVehicleStreetOriginName < secondVehicleStreetOriginName)
+       if (firstVehicleType == ObjectType::objectBike)
        {
-	  firstPromise->set_value();
+          firstPromise->set_value();
           _vehicles.erase(firstVehicle);
           _promises.erase(firstPromise);
        }
-       else if (firstVehicleStreetOriginName > secondVehicleStreetOriginName)
+       else 
        {
-	  secondPromise->set_value();
+          secondPromise->set_value();
           _vehicles.erase(secondVehicle);
           _promises.erase(secondPromise);
        }
     }
-    // unless the second vehicle is coming from street named 0, then other vehicle takes precedence
+    else if (secondVehicleStreetOriginName != 0 && firstVehicleStreetOriginName > secondVehicleStreetOriginName)
+    {
+       secondPromise->set_value();
+       _vehicles.erase(secondVehicle);
+       _promises.erase(secondPromise);
+    }
     else
     {
        firstPromise->set_value();
@@ -164,7 +175,7 @@ void Intersection::processVehicleQueue()
 	    { 
 	       _waitingVehicles.permitEntryToFirstInQueue(); 
 	    }
-            // permit entry into intersection according to rules
+            // permit entry according to rules
             else
             {
 	       _waitingVehicles.permitEntryToVehicleFromTheRight();
